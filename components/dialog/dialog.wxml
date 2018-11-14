@@ -1,0 +1,14 @@
+<view hidden="{{!isShowModel}}">
+  <view class="modal-mask" catchtouchmove="preventTouchMove"></view>
+  <view class="modal-dialog">
+    <view class="modal-title">{{dialogTitle}}</view>
+    <view class="modal-content">
+      <icon type="cancel" wx:if="{{iconType == 0}}"/>
+      <icon type="success" wx:if="{{iconType == 1}}"/>
+      <view class='modal-content-txt'>{{dialogTxt}}</view>
+    </view>
+    <view class="modal-footer" catchtap='hideModel' hover-class='active'>
+      确定
+    </view>
+  </view>
+</view>

@@ -1,0 +1,37 @@
+.inputWrapper {
+  display: flex;
+  justify-content: space-around;
+	margin-top: 20px;
+	font-size: 0px;
+}
+.inputWrapper .title {
+	box-sizing: border-box;
+	display: inline-block;
+	padding-left: 1em;
+	width: 104px;
+	height: 24px;
+	vertical-align: top;
+	line-height: 24px;
+	font-size: 16px;
+}
+.inputWrapper .input {
+	display: inline-block;
+	padding-left: 4px;
+	width: 150px;
+	height: 24px;
+	line-height: 24px;
+	font-size: 16px;
+	border: 1px solid #ddd;
+	vertical-align: top;
+}
+.submitBtn {
+  padding: 0;
+  margin: auto;
+  margin-top: 30px;
+  width: 40%;
+  background-color: #21bb20;
+  color: #fff;
+  text-align: center;
+  line-height: 40px;
+  border-radius: 4px;
+}

@@ -1,0 +1,52 @@
+<view wx:if="{{isLoading}}" style='width: 100%;text-align:center;'>
+    <image src='../../img/5-121204193R0.gif' style='margin:auto;margin-top: 50px;width: 50px;height: 50px;'></image>
+</view>
+<view wx:if="{{!resultObj.wechatnick && !isLoading}}" style='margin-top: 80px;text-align: center;'>
+    <icon type="warn" size="25" style='margin-right: 10px;vertical-align:top;'></icon>暂无登记记录
+</view>
+<view class="inputContainer" wx:if="{{resultObj.wechatnick}}">
+    <view style="margin: 30px 0;text-align:center;font-size: 18px;"><icon type="success" size="25" style='margin-right: 5px;vertical-align:top;'></icon>登记成功，以下为登记信息</view>
+    <view class="inputWrapper">
+        <view class="title">
+            <sicon name="icon-icon_zhanghao" style="margin-right:4px;"></sicon>微信昵称
+        </view>
+        <input class="input" disabled='false' value="{{resultObj.wechatnick}}"></input>
+    </view>
+    <!-- <view class="inputWrapper">
+            <view class="title">
+                手机号
+            </view>
+            <input class="input" disabled='false' value="{{resultObj.mobile}}"></input>
+        </view> -->
+    <view class="inputWrapper">
+        <view class="title">
+            <sicon name="icon-qiche" style="margin-right:4px;"></sicon>车牌
+        </view>
+        <input class="input" disabled='false' value="{{resultObj.platenum}}"></input>
+    </view>
+    <view class="inputWrapper">
+        <view class="title">
+            <sicon name="icon-zhanghaoquanxianguanli" style="margin-right:4px;"></sicon>来访单位
+        </view>
+        <input class="input" disabled='false' value="{{resultObj.company}}"></input>
+    </view>
+    <view class="inputWrapper">
+        <view class="title">
+            <sicon name="icon-quanxianshenpi" style="margin-right:4px;"></sicon>受访人
+        </view>
+        <input class="input" disabled='false' value="{{resultObj.interviewee}}"></input>
+    </view>
+    <view class="inputWrapper">
+        <view class="title">
+            <sicon name="icon-tubiao-qiapian" style="margin-right:4px;"></sicon>受访部门
+        </view>
+        <input class="input" disabled='false' value="{{resultObj.interviewee_dept}}"></input>
+    </view>
+    <view class="inputWrapper">
+        <view class="title">
+            <sicon name="icon-ceshishenqing" style="margin-right:4px;"></sicon>受访目的
+        </view>
+        <input class="input" disabled='false' value="{{resultObj.cause}}"></input>
+    </view>
+    <button class="submitBtn" bindtap='gosignin'>修改登记信息</button>
+</view>

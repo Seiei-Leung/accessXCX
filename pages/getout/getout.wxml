@@ -1,0 +1,4 @@
+<view style='width: 100%;text-align:center;'>
+  <image src='../../img/5-121204193R0.gif' style='margin:auto;margin-top: 50px;width: 50px;height: 50px;'></image>
+</view>
+<dialog id='dialog' iconType="{{iconType}}" funcType="{{funcType}}" dialogTitle="{{dialogTitle}}" dialogTxt="{{dialogTxt}}"></dialog>
