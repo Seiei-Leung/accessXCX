@@ -20,7 +20,7 @@
         </view> -->
         <view class="inputWrapper">
             <view class="title">
-                <sicon name="icon-qiche" style="margin-right:4px;"></sicon>车牌
+                <sicon name="icon-qiche" style="margin-right:4px;"></sicon>来访车牌
             </view>
             <view class="input">
                 <input style="display:inline-block;width:70%;" value="{{plateNumber}}" bindinput='plateNumberChange'></input>
@@ -37,23 +37,33 @@
         </view>
         <view class="inputWrapper">
             <view class="title">
-                <sicon name="icon-quanxianshenpi" style="margin-right:4px;"></sicon>受访人
+                <sicon name="icon-icon_zhanghao" style="margin-right:4px;"></sicon>来访人数
+            </view>
+            <view class="input">
+                <picker bindchange="numOfPeoplePickerChange" value="{{numOfPeopleIndex}}" range="{{numOfPeopleArray}}">
+                    <input disabled='true' value="{{numOfPeopleArray[numOfPeopleIndex]}}"></input>
+                </picker>
+            </view>
+        </view>
+        <view class="inputWrapper">
+            <view class="title">
+                <sicon name="icon-quanxianshenpi" style="margin-right:4px;"></sicon>会见人员
             </view>
             <input class="input" value="{{interviewee}}" bindinput='intervieweeChange'></input>
         </view>
         <view class="inputWrapper">
             <view class="title">
-                <sicon name="icon-tubiao-qiapian" style="margin-right:4px;"></sicon>受访部门
+                <sicon name="icon-tubiao-qiapian" style="margin-right:4px;"></sicon>会见部门
             </view>
-            <input class="input" value="{{intervieweeDept}}"></input>
+            <input class="input" value="{{intervieweeDept}}" bindinput='intervieweeDeptChange'></input>
         </view>
         <view class="inputWrapper">
             <view class="title">
-                <sicon name="icon-ceshishenqing" style="margin-right:4px;"></sicon>来访目的
+                <sicon name="icon-ceshishenqing" style="margin-right:4px;"></sicon>来访事由
             </view>
-            <view class="inputTxt">
-                <picker bindchange="sizePickerChange" value="{{sizeindex}}" range="{{sizeArray}}">
-                    <input class="input" disabled='true' value="{{sizeArray[sizeindex]}}"></input>
+            <view class="input">
+                <picker bindchange="visitResultPickerChange" value="{{visitResultindex}}" range="{{visitResultArray}}">
+                    <input disabled='true' value="{{visitResultArray[visitResultindex]}}"></input>
                 </picker>
             </view>
         </view>
@@ -66,7 +76,7 @@
     </view>
     <view class="resultWrapper plateNumberResult" wx:if="{{isSelectPlateNumber}}">
     	<view class='resultItem' wx:for="{{plateNumberResultList}}">
-        	<view class="txt" bindtap='selectPlateNumber' data-plateNumber="{{item.name}}">{{item.name}}</view>
+        	<view class="txt" bindtap='selectPlateNumber' data-platenumber="{{item.platenum}}">{{item.platenum}}</view>
       	</view>
     </view>
     <view class="resultWrapper companyResult" wx:if="{{isSelectCompany}}">
@@ -82,6 +92,9 @@
     <view class="closeBtn" wx:if="{{isSelectPlateNumber || isSelectCompany || isSelectinterviewee}}" bindtap='closeShowBlock'>取 消</view>
 </view>
 <dialog id='dialog' iconType="{{iconType}}" funcType="{{funcType}}" dialogTitle="{{dialogTitle}}" dialogTxt="{{dialogTxt}}"></dialog>
-<view wx:if="{{isLoading}}" style='position: fixed;top: 0;bottom: 0;width: 100%;text-align:center;background-color: rgba(0,0,0,0.3);'>
+<view wx:if="{{isLoading}}" style='position: fixed;top: 0;bottom: 0;width: 100%;text-align:center;background-color: rgba(0,0,0,0.3);z-index: 100000;'>
   <image src='../../img/5-121204193R0.gif' style='margin:auto;margin-top: 50px;width: 50px;height: 50px;'></image>
+  <view wx:if="{{iscloseImgReload}}" class="cancelBtn" bindtap='closeImgReload'>
+    取消图片识别
+  </view>
 </view>

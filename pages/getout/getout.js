@@ -7,7 +7,8 @@ Page({
     iconType: 0,
     funcType: 0,
     openid: "",
-    platenum: ""
+    platenum: "",
+    interviewee: ""
   },
   onReady: function () {
     this.dialog = this.selectComponent("#dialog");
@@ -22,7 +23,15 @@ Page({
           platenum: res.data
         });
       }
-    })
+    });
+    wx.getStorage({
+      key: 'interviewee',
+      success(res) {
+        that.setData({
+          interviewee: res.data
+        });
+      }
+    });
     if (app.globalData.openid) {
       this.setData({
         openid: app.globalData.openid
@@ -39,6 +48,7 @@ Page({
             var senddata = {};
             senddata.openId = app.globalData.openid;
             senddata.plate = that.data.platenum;
+            senddata.interviewee = that.data.interviewee;
             senddata.state = 0;
             wx.request({
               url: app.globalData.twUrl + '/estapi/api/VisitCheckIn/SendMPTemp',
@@ -53,30 +63,31 @@ Page({
                 that.dialog.showModal();
               },
               fail: function (res2) {
-                this.setData({
+                that.setData({
                   dialogTitle: "提示",
-                  dialogTxt: "放行失败，请重试",
-                  iconType: 0,
+                  dialogTxt: "成功放行，但消息模板接口调用错误",
+                  iconType: 1,
                   funcType: 1
                 });
-                this.dialog.showModal();
+                that.dialog.showModal();
               }
             })
+          } else if (res1.data.result == "找不到对应的登记记录！") {
             that.setData({
               dialogTitle: "提示",
-              dialogTxt: "成功放行",
-              iconType: 1,
+              dialogTxt: "没有入厂登记记录，请扫描入厂二维码",
+              iconType: 0,
               funcType: 1
             });
             that.dialog.showModal();
           } else {
-            that.setData({
+            this.setData({
               dialogTitle: "提示",
               dialogTxt: "放行失败，请重试",
               iconType: 0,
               funcType: 1
             });
-            that.dialog.showModal();
+            this.dialog.showModal();
           }
         },
         fail: function (res) {
@@ -121,23 +132,31 @@ Page({
                   that.dialog.showModal();
                 },
                 fail: function (res2) {
-                  this.setData({
+                  that.setData({
                     dialogTitle: "提示",
-                    dialogTxt: "放行失败，请重试",
-                    iconType: 0,
+                    dialogTxt: "成功放行，但消息模板接口调用错误",
+                    iconType: 1,
                     funcType: 1
                   });
-                  this.dialog.showModal();
+                  that.dialog.showModal();
                 }
               })
-            } else {
+            } else if (res1.data.result == "找不到对应的登记记录！") {
               that.setData({
+                dialogTitle: "提示",
+                dialogTxt: "没有入厂登记记录，请扫描入厂二维码",
+                iconType: 0,
+                funcType: 1
+              });
+              that.dialog.showModal();
+            } else {
+              this.setData({
                 dialogTitle: "提示",
                 dialogTxt: "放行失败，请重试",
                 iconType: 0,
                 funcType: 1
               });
-              that.dialog.showModal();
+              this.dialog.showModal();
             }
           },
           fail: function (res) {

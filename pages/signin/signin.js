@@ -1,7 +1,7 @@
 //index.js
 //获取应用实例
 const app = getApp();
-var T1,T2,T3;
+var T1, T2, T3;
 
 Page({
   data: {
@@ -12,8 +12,10 @@ Page({
     userInfo: {},
     hasUserInfo: false,
     canIUse: wx.canIUse('button.open-type.getUserInfo'),
-    sizeArray: ["","业务","工程","拜访","快递", "面试", "送货"],
-    sizeindex: 0,
+    visitResultArray: [" ", "业务", "工程", "拜访", "快递", "面试", "送货"],
+    visitResultindex: 0,
+    numOfPeopleArray: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50],
+    numOfPeopleIndex: 0,
     imgUrl: "",
     plateNumber: "",
     company: "",
@@ -27,73 +29,148 @@ Page({
     intervieweeResultList: [],
     guard: "",
     openid: "",
-    isLoading: false
+    isLoading: false,
+    peopleNum: "",
+    isScan: false,
+    iscloseImgReload: false
   },
-  onReady: function () {
+  onReady: function() {
     this.dialog = this.selectComponent("#dialog");
   },
-  onLoad: function (query) {
+  onLoad: function(query) {
     var that = this;
     const scene = decodeURIComponent(query.scene).split(":")[1];
     console.log("扫码识别保安编号：" + scene);
-    wx.request({
-      url: app.globalData.twUrl + '/estapi/api/VisitCheckIn/SearchEmployee?code=' + scene,
-      method: "GET",
-      success: function(res) {
-        console.log("保安名称：" + res.data.name);
-        if (res.data.name) {
-          that.setData({
-            guard: res.data.name
-          })
-        }
-      }
-    })
-
-    if (app.globalData.openid) {
+    if (scene) {
       this.setData({
-        openid: app.globalData.openid
+        isScan: true,
+        guard: scene
+      });
+    }
+    if (app.globalData.openid) {
+
+      console.log("不是通过 openidReadyCallback 回调");
+      this.setData({
+        openid: app.globalData.openid,
+        isLoading: true
       });
       wx.request({
         url: app.globalData.twUrl + "/estapi/api/VisitCheckIn/SearchCurrentCheckIn?openid=" + that.data.openid,
         method: "GET",
-        success: function (res) {
+        success: function(res) {
           console.log(res);
           if (res.data.wechatnick) {
+            if (!that.data.isScan) {
+              that.setData({
+                plateNumber: res.data.platenum,
+                company: res.data.company,
+                interviewee: res.data.interviewee,
+                intervieweeDept: res.data.interviewee_dept,
+                visitResultindex: that.data.visitResultArray.indexOf(res.data.cause),
+                numOfPeopleIndex: that.data.numOfPeopleArray.indexOf(res.data.numofp),
+                isLoading: false
+              })
+            } else {
+              wx.reLaunch({
+                url: '../index/index'
+              })
+            }
+          } else {
             that.setData({
-              plateNumber: res.data.platenum,
-              company: res.data.company,
-              interviewee: res.data.interviewee,
-              intervieweeDept: res.data.interviewee_dept,
-              sizeindex: that.data.sizeArray.indexOf(res.data.cause)
+              isLoading: false
             })
+            // wx.request({
+            //   url: app.globalData.twUrl + "/estapi/api/VisitCheckIn/SearchCompanyByOpenid?openid=" + that.data.openid,
+            //   method: "GET",
+            //   success: function(res1) {
+            //     if (res1.data && res1.data.company) {
+            //       that.setData({
+            //         company: res1.data.company,
+            //         isLoading: false
+            //       })
+            //     } else {
+            //       that.setData({
+            //         isLoading: false
+            //       })
+            //     }
+            //   },
+            //   fail: function(res1) {
+            //     that.setData({
+            //       isLoading: false
+            //     })
+            //   }
+            // })
           }
+        },
+        fail: function(res) {
+          that.setData({
+            isLoading: false
+          })
         }
       });
     } else {
       app.openidReadyCallback = res => {
+        console.log("通过 openidReadyCallback 回调");
         // 这里的 this 是指向当前页面的this
         this.setData({
-          openid: res.data.openid
+          openid: res.data.openid,
+          isLoading: true
         })
         wx.request({
           url: app.globalData.twUrl + "/estapi/api/VisitCheckIn/SearchCurrentCheckIn?openid=" + that.data.openid,
           method: "GET",
-          success: function (res1) {
+          success: function(res1) {
             if (res1.data.wechatnick) {
+              if (!that.data.isScan) {
+                that.setData({
+                  plateNumber: res.data.platenum,
+                  company: res.data.company,
+                  interviewee: res.data.interviewee,
+                  intervieweeDept: res.data.interviewee_dept,
+                  visitResultindex: that.data.visitResultArray.indexOf(res.data.cause),
+                  numOfPeopleIndex: that.data.numOfPeopleArray.indexOf(res.data.numofp),
+                  isLoading: false
+                })
+              } else {
+                wx.reLaunch({
+                  url: '../index/index'
+                })
+              }
+            } else {
               that.setData({
-                plateNumber: res1.data.platenum,
-                company: res1.data.company,
-                interviewee: res1.data.interviewee,
-                intervieweeDept: res1.data.interviewee_dept,
-                sizeindex: that.data.sizeArray.indexOf(res1.data.cause)
+                isLoading: false
               })
+              // wx.request({
+              //   url: app.globalData.twUrl + "/estapi/api/VisitCheckIn/SearchCompanyByOpenid?openid=" + that.data.openid,
+              //   method: "GET",
+              //   success: function(res2) {
+              //     if (res1.data && res2.data.company) {
+              //       that.setData({
+              //         company: res2.data.company,
+              //         isLoading: false
+              //       })
+              //     } else {
+              //       that.setData({
+              //         isLoading: false
+              //       })
+              //     }
+              //   },
+              //   fail: function(res2) {
+              //     that.setData({
+              //       isLoading: false
+              //     })
+              //   }
+              // })
             }
+          },
+          fail: function(res1) {
+            that.setData({
+              isLoading: false
+            })
           }
         });
       }
     }
-
-
     if (app.globalData.userInfo) {
       this.setData({
         userInfo: app.globalData.userInfo,
@@ -121,20 +198,8 @@ Page({
         }
       })
     }
-    if (app.globalData.openid) {
-      this.setData({
-        openid: app.globalData.openid
-      })
-    } else {
-      app.openidReadyCallback = res =>{
-        // 这里的 this 是指向当前页面的this
-        this.setData({
-          openid: res.data.openid
-        })
-      }
-    }
   },
-  getUserInfo: function (e) {
+  getUserInfo: function(e) {
     console.log(e);
     var that = this;
     wx.getSetting({
@@ -149,27 +214,49 @@ Page({
       }
     })
   },
-  getPhoneNumber: function (e) {
+  getPhoneNumber: function(e) {
     var that = this;
-    console.log(e);
     if (e.detail.encryptedData && e.detail.iv) {
       var data = {};
       data.openid = this.data.openid;
       data.wechatnick = this.data.userInfo.nickName;
+      data.headurl = this.data.userInfo.avatarUrl;
       data.mobile = "123456";
       data.platenum = this.data.plateNumber;
       data.company = this.data.company;
       data.interviewee = this.data.interviewee;
       data.interviewee_dept = this.data.intervieweeDept;
-      data.cause = this.data.sizeArray[this.data.sizeindex];
+      data.cause = this.data.visitResultArray[this.data.visitResultindex];
       data.guard = this.data.guard;
       data.encryptedData = e.detail.encryptedData;
       data.iv = e.detail.iv;
       data.session_key = app.globalData.session_key;
-      if (!data.interviewee.trim() || !data.interviewee_dept.trim() || !data.cause) {
+      data.numofp = this.data.numOfPeopleArray[this.data.numOfPeopleIndex];
+      console.log(that.data.visitResultindex);
+      if (!data.interviewee.trim()) {
         that.setData({
           dialogTitle: "提示",
-          dialogTxt: "来访目的，受访人，受访部门不能为空！",
+          dialogTxt: "受访人不能为空！",
+          iconType: 0,
+          funcType: 0
+        });
+        that.dialog.showModal();
+        return;
+      }
+      if (!data.interviewee_dept.trim()) {
+        that.setData({
+          dialogTitle: "提示",
+          dialogTxt: "受访部门不能为空！",
+          iconType: 0,
+          funcType: 0
+        });
+        that.dialog.showModal();
+        return;
+      }
+      if (that.data.visitResultindex == 0) {
+        that.setData({
+          dialogTitle: "提示",
+          dialogTxt: "来访事由不能为空！",
           iconType: 0,
           funcType: 0
         });
@@ -186,21 +273,26 @@ Page({
             var senddata = {};
             senddata.openId = app.globalData.openid;
             senddata.plate = data.platenum;
+            senddata.interviewee = data.interviewee;
             wx.setStorage({
               key: "platenum",
               data: data.platenum
-            })
+            });
+            wx.setStorage({
+              key: "interviewee",
+              data: data.interviewee
+            });
             senddata.state = 1;
             wx.request({
               url: app.globalData.twUrl + '/estapi/api/VisitCheckIn/SendMPTemp',
               data: senddata,
-              success: function(res1){}
+              success: function(res1) {}
             })
             that.setData({
               dialogTitle: "提示",
               dialogTxt: "登记成功",
               iconType: 1,
-              funcType: 0
+              funcType: 1
             });
             that.dialog.showModal();
           }
@@ -216,15 +308,21 @@ Page({
       this.dialog.showModal();
     }
   },
-  sizePickerChange: function (e) {
+  visitResultPickerChange: function(e) {
     this.setData({
-      sizeindex: e.detail.value
+      visitResultindex: e.detail.value
     })
   },
-  uploadimg: function () {
+  numOfPeoplePickerChange: function(e) {
+    this.setData({
+      numOfPeopleIndex: e.detail.value
+    })
+  },
+  uploadimg: function() {
     var that = this;
     this.setData({
-      isLoading: true
+      isLoading: true,
+      iscloseImgReload: true
     });
     wx.chooseImage({
       sizeType: ['compressed'],
@@ -245,24 +343,26 @@ Page({
               header: {
                 'content-type': 'application/json',
                 'host': 'recognition.image.myqcloud.com',
-                'authorization': '+WRUUN/cpFi3EH2RRnONEedMDfthPTEyNTY1OTcwMTYmYj0maz1BS0lERVBQTTltdlpralc4RU91YXg4OHBaRWtzdW9kTHFhekcmdD0xNTQyMDc4NDEzJmU9MTU0MjMzNzYxMyZyPTg3Nzg5ODIyNw=='
+                'authorization': JSON.parse(res1.data).authorization
               },
               method: 'POST',
               data: {
                 appid: '1256597016',
                 url: JSON.parse(res1.data).filename
               },
-              success: function (res2) {
-                console.log(res2.data.message);
-                if (res2.data.data.items[0]) {
+              success: function(res2) {
+                console.log(res2.data);
+                if (res2.data.data && res2.data.data.items && res2.data.data.items[0] && res2.data.data.items[0].itemstring) {
                   console.log(res2.data.data.items[0].itemstring);
                   that.setData({
                     "isLoading": false,
+                    "iscloseImgReload": false,
                     "plateNumber": res2.data.data.items[0].itemstring
                   })
                 } else {
                   that.setData({
                     isLoading: false,
+                    iscloseImgReload: false,
                     dialogTitle: "提示",
                     dialogTxt: "图片识别失败",
                     iconType: 0,
@@ -271,9 +371,10 @@ Page({
                   that.dialog.showModal();
                 }
               },
-              fail: function () {
+              fail: function() {
                 that.setData({
                   isLoading: false,
+                  iscloseImgReload: false,
                   dialogTitle: "提示",
                   dialogTxt: "图片识别失败",
                   iconType: 0,
@@ -283,9 +384,10 @@ Page({
               }
             })
           },
-          fail: function () {
+          fail: function() {
             that.setData({
               isLoading: false,
+              iscloseImgReload: false,
               dialogTitle: "提示",
               dialogTxt: "图片上传失败",
               iconType: 0,
@@ -295,14 +397,15 @@ Page({
           }
         })
       },
-      fail: function () {
+      fail: function() {
         that.setData({
-          isLoading: false
+          isLoading: false,
+          iscloseImgReload: false,
         });
       }
     })
   },
-  plateNumberChange: function (e) {
+  plateNumberChange: function(e) {
     this.setData({
       isSelectPlateNumber: true,
       plateNumber: e.detail.value
@@ -316,7 +419,7 @@ Page({
         header: {
           'content-type': 'application/json'
         },
-        success: function (res) {
+        success: function(res) {
           if (res.data.length > 0) {
             that.setData({
               plateNumberResultList: res.data
@@ -330,7 +433,12 @@ Page({
       })
     }, 1500);
   },
-  companyChange: function (e) {
+  intervieweeDeptChange: function(e) {
+    this.setData({
+      intervieweeDept: e.detail.value
+    })
+  },
+  companyChange: function(e) {
     this.setData({
       isSelectCompany: true,
       company: e.detail.value
@@ -344,7 +452,7 @@ Page({
         header: {
           'content-type': 'application/json'
         },
-        success: function (res) {
+        success: function(res) {
           if (res.data.length > 0) {
             that.setData({
               companyResultList: res.data
@@ -358,7 +466,7 @@ Page({
       })
     }, 1500);
   },
-  intervieweeChange: function (e) {
+  intervieweeChange: function(e) {
     this.setData({
       isSelectinterviewee: true,
       interviewee: e.detail.value
@@ -372,7 +480,7 @@ Page({
         header: {
           'content-type': 'application/json'
         },
-        success: function (res) {
+        success: function(res) {
           if (res.data.length > 0) {
             that.setData({
               intervieweeResultList: res.data
@@ -393,19 +501,20 @@ Page({
       isSelectinterviewee: false
     })
   },
-  selectCompany: function (e) {
+  selectCompany: function(e) {
     this.setData({
       company: e.currentTarget.dataset.company,
       isSelectCompany: false
     })
   },
-  selectPlateNumber: function (e) {
+  selectPlateNumber: function(e) {
+    console.log(e.currentTarget.dataset.platenumber)
     this.setData({
-      plateNumber: e.currentTarget.dataset.plateNumber,
+      plateNumber: e.currentTarget.dataset.platenumber,
       isSelectPlateNumber: false
     })
   },
-  selectinterviewee: function (e) {
+  selectinterviewee: function(e) {
     this.setData({
       interviewee: e.currentTarget.dataset.interviewee,
       intervieweeDept: e.currentTarget.dataset.intervieweedept,
@@ -413,8 +522,19 @@ Page({
     })
   },
   test: function() {
-    // wx.navigateTo({
-    //   url: '../getout/getout',
-    // })
+    var that = this;
+    wx.request({
+      url: app.globalData.twUrl + "/estapi/api/VisitCheckIn/SearchCurrentCheckIn?openid=" + that.data.openid,
+      method: "GET",
+      success: function (res) {
+        console.log(res);
+      }
+    });
+  },
+  closeImgReload: function() {
+    this.setData({
+      isLoading: false,
+      iscloseImgReload: false
+    })
   }
 })

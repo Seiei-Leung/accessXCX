@@ -8,7 +8,7 @@
 	box-sizing: border-box;
 	display: inline-block;
 	padding-left: 1em;
-	width: 104px;
+	width: 35%;
 	height: 24px;
 	vertical-align: top;
 	line-height: 24px;
@@ -16,8 +16,9 @@
 }
 .inputWrapper .input {
 	display: inline-block;
+  margin-right: 10px;
 	padding-left: 4px;
-	width: 150px;
+	width: 60%;
 	height: 24px;
 	line-height: 24px;
 	font-size: 16px;
