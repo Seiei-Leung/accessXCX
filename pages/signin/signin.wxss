@@ -76,7 +76,7 @@
   overflow: scroll;
 }
 .plateNumberResult {
-  top: 150px;
+  top: 325px;
 }
 .companyResult {
   top: 200px;

@@ -1,7 +1,7 @@
 //index.js
 //获取应用实例
 const app = getApp();
-var T1, T2, T3;
+var T1, T2, T3, T4;
 
 Page({
   data: {
@@ -24,9 +24,11 @@ Page({
     isSelectPlateNumber: false,
     isSelectCompany: false,
     isSelectinterviewee: false,
+    isSelectintervieweeDept: false,
     plateNumberResultList: [],
     companyResultList: [],
     intervieweeResultList: [],
+    intervieweeDeptResultList: [],
     guard: "",
     openid: "",
     isLoading: false,
@@ -79,27 +81,27 @@ Page({
             that.setData({
               isLoading: false
             })
-            // wx.request({
-            //   url: app.globalData.twUrl + "/estapi/api/VisitCheckIn/SearchCompanyByOpenid?openid=" + that.data.openid,
-            //   method: "GET",
-            //   success: function(res1) {
-            //     if (res1.data && res1.data.company) {
-            //       that.setData({
-            //         company: res1.data.company,
-            //         isLoading: false
-            //       })
-            //     } else {
-            //       that.setData({
-            //         isLoading: false
-            //       })
-            //     }
-            //   },
-            //   fail: function(res1) {
-            //     that.setData({
-            //       isLoading: false
-            //     })
-            //   }
-            // })
+            wx.request({
+              url: app.globalData.twUrl + "/estapi/api/VisitCheckIn/SearchCompanyByOpenid?openid=" + that.data.openid,
+              method: "GET",
+              success: function(res1) {
+                if (res1.data && res1.data.company) {
+                  that.setData({
+                    company: res1.data.company,
+                    isLoading: false
+                  })
+                } else {
+                  that.setData({
+                    isLoading: false
+                  })
+                }
+              },
+              fail: function(res1) {
+                that.setData({
+                  isLoading: false
+                })
+              }
+            })
           }
         },
         fail: function(res) {
@@ -140,27 +142,27 @@ Page({
               that.setData({
                 isLoading: false
               })
-              // wx.request({
-              //   url: app.globalData.twUrl + "/estapi/api/VisitCheckIn/SearchCompanyByOpenid?openid=" + that.data.openid,
-              //   method: "GET",
-              //   success: function(res2) {
-              //     if (res1.data && res2.data.company) {
-              //       that.setData({
-              //         company: res2.data.company,
-              //         isLoading: false
-              //       })
-              //     } else {
-              //       that.setData({
-              //         isLoading: false
-              //       })
-              //     }
-              //   },
-              //   fail: function(res2) {
-              //     that.setData({
-              //       isLoading: false
-              //     })
-              //   }
-              // })
+              wx.request({
+                url: app.globalData.twUrl + "/estapi/api/VisitCheckIn/SearchCompanyByOpenid?openid=" + that.data.openid,
+                method: "GET",
+                success: function(res2) {
+                  if (res1.data && res2.data.company) {
+                    that.setData({
+                      company: res2.data.company,
+                      isLoading: false
+                    })
+                  } else {
+                    that.setData({
+                      isLoading: false
+                    })
+                  }
+                },
+                fail: function(res2) {
+                  that.setData({
+                    isLoading: false
+                  })
+                }
+              })
             }
           },
           fail: function(res1) {
@@ -274,6 +276,7 @@ Page({
             senddata.openId = app.globalData.openid;
             senddata.plate = data.platenum;
             senddata.interviewee = data.interviewee;
+            senddata.company = data.company;
             wx.setStorage({
               key: "platenum",
               data: data.platenum
@@ -281,6 +284,10 @@ Page({
             wx.setStorage({
               key: "interviewee",
               data: data.interviewee
+            });
+            wx.setStorage({
+              key: "company",
+              data: data.company
             });
             senddata.state = 1;
             wx.request({
@@ -433,12 +440,8 @@ Page({
       })
     }, 1500);
   },
-  intervieweeDeptChange: function(e) {
-    this.setData({
-      intervieweeDept: e.detail.value
-    })
-  },
   companyChange: function(e) {
+    this.closeAllSelectWrapper();
     this.setData({
       isSelectCompany: true,
       company: e.detail.value
@@ -467,6 +470,13 @@ Page({
     }, 1500);
   },
   intervieweeChange: function(e) {
+    this.closeAllSelectWrapper();
+    var url = "";
+    if (this.data.intervieweeDept.trim() == "") {
+      url = app.globalData.twUrl + '/estapi/api/VisitCheckIn/SearchStaff?keyword=' + e.detail.value;
+    } else {
+      url = app.globalData.twUrl + '/estapi/api/VisitCheckIn/SearchEmployee?dept=' + this.data.intervieweeDept + "&keyword=" + e.detail.value;
+    }
     this.setData({
       isSelectinterviewee: true,
       interviewee: e.detail.value
@@ -475,7 +485,7 @@ Page({
     clearTimeout(T3);
     T3 = setTimeout(() => {
       wx.request({
-        url: app.globalData.twUrl + '/estapi/api/VisitCheckIn/SearchStaff?keyword=' + e.detail.value,
+        url: url,
         method: "GET",
         header: {
           'content-type': 'application/json'
@@ -494,11 +504,41 @@ Page({
       })
     }, 1500);
   },
+  intervieweeDeptChange: function(e) {
+    this.closeAllSelectWrapper();
+    this.setData({
+      isSelectintervieweeDept: true,
+      intervieweeDept: e.detail.value
+    });
+    var that = this;
+    clearTimeout(T4);
+    T4 = setTimeout(() => {
+      wx.request({
+        url: app.globalData.twUrl + '/estapi/api/VisitCheckIn/SearchDept?keyword=' + e.detail.value,
+        method: "GET",
+        header: {
+          'content-type': 'application/json'
+        },
+        success: function(res) {
+          if (res.data.length > 0) {
+            that.setData({
+              intervieweeDeptResultList: res.data
+            });
+          } else {
+            that.setData({
+              isSelectintervieweeDept: false
+            });
+          }
+        }
+      })
+    }, 1500);
+  },
   closeShowBlock: function() {
     this.setData({
       isSelectPlateNumber: false,
       isSelectCompany: false,
-      isSelectinterviewee: false
+      isSelectinterviewee: false,
+      isSelectintervieweeDept: false
     })
   },
   selectCompany: function(e) {
@@ -517,8 +557,18 @@ Page({
   selectinterviewee: function(e) {
     this.setData({
       interviewee: e.currentTarget.dataset.interviewee,
-      intervieweeDept: e.currentTarget.dataset.intervieweedept,
       isSelectinterviewee: false
+    });
+    if (!(e.currentTarget.dataset.intervieweedept.trim() == "")) {
+      this.setData({
+        intervieweeDept: e.currentTarget.dataset.intervieweedept
+      });
+    }
+  },
+  selectintervieweeDept: function(e) {
+    this.setData({
+      intervieweeDept: e.currentTarget.dataset.intervieweedept,
+      isSelectintervieweeDept: false
     })
   },
   test: function() {
@@ -535,6 +585,14 @@ Page({
     this.setData({
       isLoading: false,
       iscloseImgReload: false
+    })
+  },
+  closeAllSelectWrapper: function() {
+    this.setData({
+      isSelectinterviewee: false,
+      isSelectintervieweeDept: false,
+      isSelectCompany: false,
+      isSelectPlateNumber: false
     })
   }
 })

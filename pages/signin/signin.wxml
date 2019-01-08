@@ -6,29 +6,13 @@
 <view wx:if="{{hasUserInfo}}">
     <view class="inputContainer">
     <view style="margin: 20px 0;text-align:center;font-size: 18px;">请填写来访登记信息</view>
-        <view class="inputWrapper">
-            <view class="title">
-                <sicon name="icon-icon_zhanghao" style="margin-right:4px;"></sicon>微信昵称
-            </view>
-            <input class="input" disabled='true' value="{{userInfo.nickName}}"></input>
-        </view>
+        
         <!-- <view class="inputWrapper">
             <view class="title">
                 手机号
             </view>
             <input class="input" disabled='true'></input>
         </view> -->
-        <view class="inputWrapper">
-            <view class="title">
-                <sicon name="icon-qiche" style="margin-right:4px;"></sicon>来访车牌
-            </view>
-            <view class="input">
-                <input style="display:inline-block;width:70%;" value="{{plateNumber}}" bindinput='plateNumberChange'></input>
-                <view class="icon" bindtap='uploadimg'>
-                    拍照
-                </view>
-            </view>
-        </view>
         <view class="inputWrapper">
             <view class="title">
               <sicon name="icon-zhanghaoquanxianguanli" style="margin-right:4px;"></sicon>来访单位
@@ -47,15 +31,15 @@
         </view>
         <view class="inputWrapper">
             <view class="title">
-                <sicon name="icon-quanxianshenpi" style="margin-right:4px;"></sicon>会见人员
-            </view>
-            <input class="input" value="{{interviewee}}" bindinput='intervieweeChange'></input>
-        </view>
-        <view class="inputWrapper">
-            <view class="title">
                 <sicon name="icon-tubiao-qiapian" style="margin-right:4px;"></sicon>会见部门
             </view>
             <input class="input" value="{{intervieweeDept}}" bindinput='intervieweeDeptChange'></input>
+        </view>
+        <view class="inputWrapper">
+            <view class="title">
+                <sicon name="icon-quanxianshenpi" style="margin-right:4px;"></sicon>会见人员
+            </view>
+            <input class="input" value="{{interviewee}}" bindinput='intervieweeChange'></input>
         </view>
         <view class="inputWrapper">
             <view class="title">
@@ -66,6 +50,23 @@
                     <input disabled='true' value="{{visitResultArray[visitResultindex]}}"></input>
                 </picker>
             </view>
+        </view>
+        <view class="inputWrapper">
+            <view class="title">
+                <sicon name="icon-qiche" style="margin-right:4px;"></sicon>来访车牌
+            </view>
+            <view class="input">
+                <input style="display:inline-block;width:70%;" value="{{plateNumber}}" bindinput='plateNumberChange'></input>
+                <view class="icon" bindtap='uploadimg'>
+                    拍照
+                </view>
+            </view>
+        </view>
+        <view class="inputWrapper">
+            <view class="title">
+                <sicon name="icon-icon_zhanghao" style="margin-right:4px;"></sicon>微信昵称
+            </view>
+            <input class="input" disabled='true' value="{{userInfo.nickName}}"></input>
         </view>
     </view>
     <view class="submitContainer">
@@ -86,10 +87,15 @@
     </view>
     <view class="resultWrapper intervieweeResult" wx:if="{{isSelectinterviewee}}">
     	<view class='resultItem' wx:for="{{intervieweeResultList}}">
-        	<view class="txt" bindtap='selectinterviewee' data-interviewee="{{item.name}}" data-intervieweedept="{{item.departname}}">{{item.name}}</view>
+        	<view class="txt" bindtap='selectinterviewee' data-interviewee="{{item.name}}" data-intervieweedept="{{item.departname?item.departname:''}}">{{item.name}}</view>
       	</view>
     </view>
-    <view class="closeBtn" wx:if="{{isSelectPlateNumber || isSelectCompany || isSelectinterviewee}}" bindtap='closeShowBlock'>取 消</view>
+    <view class="resultWrapper intervieweeDeptResult" wx:if="{{isSelectintervieweeDept}}">
+    	<view class='resultItem' wx:for="{{intervieweeDeptResultList}}">
+        	<view class="txt" bindtap='selectintervieweeDept' data-intervieweedept="{{item.departname}}">{{item.departname}}</view>
+      	</view>
+    </view>
+    <view class="closeBtn" wx:if="{{isSelectPlateNumber || isSelectCompany || isSelectinterviewee || isSelectintervieweeDept}}" bindtap='closeShowBlock'>取 消</view>
 </view>
 <dialog id='dialog' iconType="{{iconType}}" funcType="{{funcType}}" dialogTitle="{{dialogTitle}}" dialogTxt="{{dialogTxt}}"></dialog>
 <view wx:if="{{isLoading}}" style='position: fixed;top: 0;bottom: 0;width: 100%;text-align:center;background-color: rgba(0,0,0,0.3);z-index: 100000;'>

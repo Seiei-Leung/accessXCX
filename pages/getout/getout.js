@@ -8,7 +8,8 @@ Page({
     funcType: 0,
     openid: "",
     platenum: "",
-    interviewee: ""
+    interviewee: "",
+    company: ""
   },
   onReady: function () {
     this.dialog = this.selectComponent("#dialog");
@@ -32,6 +33,14 @@ Page({
         });
       }
     });
+    wx.getStorage({
+      key: 'company',
+      success(res) {
+        that.setData({
+          company: res.data
+        });
+      }
+    });
     if (app.globalData.openid) {
       this.setData({
         openid: app.globalData.openid
@@ -49,6 +58,7 @@ Page({
             senddata.openId = app.globalData.openid;
             senddata.plate = that.data.platenum;
             senddata.interviewee = that.data.interviewee;
+            senddata.company = that.data.company;
             senddata.state = 0;
             wx.request({
               url: app.globalData.twUrl + '/estapi/api/VisitCheckIn/SendMPTemp',
@@ -118,6 +128,8 @@ Page({
               var senddata = {};
               senddata.openId = app.globalData.openid;
               senddata.plate = that.data.platenum;
+              senddata.interviewee = that.data.interviewee;
+              senddata.company = that.data.company;
               senddata.state = 0;
               wx.request({
                 url: app.globalData.twUrl + '/estapi/api/VisitCheckIn/SendMPTemp',
