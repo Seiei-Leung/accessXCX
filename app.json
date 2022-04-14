@@ -2,12 +2,14 @@
   "pages": [
     "pages/index/index",
     "pages/signin/signin",
-    "pages/getout/getout"
+    "pages/getout/getout",
+    "pages/securerHelp/securerHelp"
   ],
   "window": {
     "backgroundTextStyle": "light",
     "navigationBarBackgroundColor": "#444",
     "navigationBarTitleText": "来访登记",
     "navigationBarTextStyle": "white"
-  }
+  },
+  "sitemapLocation": "sitemap.json"
 }

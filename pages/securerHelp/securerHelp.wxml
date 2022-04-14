@@ -1,9 +1,4 @@
-<!--index.wxml-->
-<view wx:if="{{!hasUserInfo && canIUse}}" style='text-align:center;'>
-    <image src='../../img/wx.jpg' class="wxIcon"></image>
-    <button open-type="getUserInfo" bindgetuserinfo="getUserInfo" class="nicknameToken" hover-class='nicknameToken_hover'>微信授权登录 </button>
-</view>
-<view wx:if="{{hasUserInfo}}">
+<view>
     <view class="inputContainer">
     <view style="margin: 20px 0;text-align:center;font-size: 18px;">请填写来访登记信息</view>
         
@@ -13,6 +8,12 @@
             </view>
             <input class="input" disabled='true'></input>
         </view> -->
+        <view class="inputWrapper">
+            <view class="title">
+              <sicon name="icon-zhanghaoquanxianguanli" style="margin-right:4px;"></sicon>来访人姓名
+            </view>
+            <input class="input" value="{{Visitorname}}" bindinput='visitorChange'></input>
+        </view>
         <view class="inputWrapper">
             <view class="title">
               <sicon name="icon-zhanghaoquanxianguanli" style="margin-right:4px;"></sicon>来访单位
@@ -62,15 +63,9 @@
                 </view>
             </view>
         </view>
-        <view class="inputWrapper">
-            <view class="title">
-                <sicon name="icon-icon_zhanghao" style="margin-right:4px;"></sicon>微信昵称
-            </view>
-            <input class="input" disabled='true' value="{{userInfo.nickName}}"></input>
-        </view>
     </view>
     <view class="submitContainer">
-        <button open-type="getPhoneNumber" bindgetphonenumber="getPhoneNumber" class="submitBtn">提交</button>
+        <button bindtap="getPhoneNumber" class="submitBtn">提交</button>
         <!-- <view class="cancelBtn" bindtap='test'>
             取消
         </view> -->

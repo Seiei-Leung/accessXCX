@@ -2,7 +2,13 @@
   <image src='../../img/5-121204193R0.gif' style='margin:auto;margin-top: 50px;width: 50px;height: 50px;'></image>
 </view>
 <view wx:if="{{!resultObj.wechatnick && !isLoading}}" style='margin-top: 80px;text-align: center;'>
-  <icon type="warn" size="25" style='margin-right: 10px;vertical-align:top;'></icon>暂无来访登记记录
+  <view>
+    <icon type="warn" size="25" style='margin-right: 10px;vertical-align:top;'></icon>暂无来访登记记录
+  </view>
+  <!-- <view wx:if="{{isShowSecurerWrapper}}">
+    <button style="display: block;margin: auto;margin-top: 50px;width: 80%;" type="primary" bindtap='securerIn'>保 安 代 入</button>
+    <button style="display: block;margin: auto;margin-top: 20px;width: 80%;" type="warn" bindtap='securerOut'>保 安 代 离 厂</button>
+  </view> -->
 </view>
 <view class="inputContainer" wx:if="{{resultObj.wechatnick}}">
   <view style="margin: 30px 0;text-align:center;font-size: 18px;">

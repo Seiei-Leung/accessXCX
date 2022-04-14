@@ -4,7 +4,8 @@ Page({
   data: {
     resultObj: {},
     openid: "",
-    isLoading: true
+    isLoading: true,
+    isShowSecurerWrapper: true,
   },
   onLoad: function (options) {
     var that = this;
@@ -17,6 +18,7 @@ Page({
         url: app.globalData.twUrl + "/estapi/api/VisitCheckIn/SearchCurrentCheckIn?openid=" + that.data.openid,
         method: "GET",
         success: function (res) {
+          console.log(res);
           that.setData({
             isLoading: false
             });
@@ -26,13 +28,19 @@ Page({
             // })
             that.setData({
               resultObj: res.data
-            })
+            });
+            if (res.data.wechatnick == '保安门卫') {
+              that.setData({
+                isShowSecurerWrapper: true
+              });
+            }
           }
         }
       });
     } else {
       app.openidReadyCallback = res => {
         console.log("通过 openidReadyCallback 回调");
+        console.log(res);
         // 这里的 this 是指向当前页面的this
         this.setData({
           openid: res.data.openid
@@ -51,7 +59,12 @@ Page({
               // })
               that.setData({
                 resultObj: res1.data
-              })
+              });
+              if (res.data.wechatnick == '保安门卫') {
+                that.setData({
+                  isShowSecurerWrapper: true
+                });
+              }
             }
           }
         });
@@ -61,6 +74,11 @@ Page({
   gosignin: function() {
     wx.reLaunch({
       url: '../signin/signin'
+    })
+  },
+  securerIn: function() {
+    wx.navigateTo({
+      url: '../securerHelp/securerHelp',
     })
   }
 })
